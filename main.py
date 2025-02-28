@@ -1,6 +1,7 @@
-import random
 import secrets
 import string
+import os
+import json
 from cryptography.fernet import Fernet
 
 def genera_contra(lon):
@@ -29,3 +30,23 @@ def descifrar_cadena(key,cadena):
     f = Fernet(key)
     return f.decrypt(cadena).decode() 
 
+def guardar_creedenciales(servicio, usuario, contraseña, file = "password.json"):
+    clave = load_key()
+
+    creedenciales_a_guardar = {
+        "usuario": cifrar_cadena(clave, usuario),
+        "contraseña": cifrar_cadena(clave, contraseña)
+    }
+
+    if os.path.exists(file):
+        with open(file,'r') as archivo_salida:
+            data = json.load(archivo_salida)
+    else:
+        data = {}
+
+    data[servicio] = creedenciales_a_guardar
+
+    with open(file,'wb') as archivo_a_guardar:
+        json.dump(data, archivo_a_guardar)
+    
+    print(f"Creedenciales para {servicio} guardadas correctamente")
