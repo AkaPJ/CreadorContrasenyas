@@ -50,3 +50,18 @@ def guardar_creedenciales(servicio, usuario, contraseña, file = "password.json"
         json.dump(data, archivo_a_guardar)
     
     print(f"Creedenciales para {servicio} guardadas correctamente")
+
+def leer_credenciales(servicio, file='password.json'):
+    clave = load_key()
+    if os.path.exists(file):
+        with open(file,'rb') as archivo_entrada:
+            data = json.load(archivo_entrada)
+        if servicio in data:
+            usuario = descifrar_cadena(clave, data[servicio]["usuario"])
+            contraseña = descifrar_cadena(clave, data[servicio]["contraseña"])
+            print(f"Servicio: {servicio} \nUsuario: {usuario} \nContraseña: {contraseña}")
+        else:
+            print(f"No se encontraron credenciales para {servicio}")
+    else:
+        print("No se encontraron credenciales")
+    
